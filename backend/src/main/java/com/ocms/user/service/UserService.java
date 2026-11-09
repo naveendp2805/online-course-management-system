@@ -2,7 +2,9 @@ package com.ocms.user.service;
 
 import com.ocms.exception.AdminRegistrationNotAllowedException;
 import com.ocms.exception.EmailAlreadyExistsException;
+import com.ocms.exception.ResourceNotFoundException;
 import com.ocms.user.dto.RegisterUserRequest;
+import com.ocms.user.dto.UpdateProfileRequest;
 import com.ocms.user.dto.UserResponse;
 import com.ocms.user.entity.User;
 import com.ocms.user.enums.Role;
@@ -53,4 +55,50 @@ public class UserService {
                 savedUser.getCreatedAt()
         );
     }
+
+    @Transactional(readOnly = true)
+    public UserResponse getUserProfile(String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "User not found"
+                        )
+                );
+
+        return toUserResponse(user);
+    }
+
+    @Transactional
+    public UserResponse updateUserProfile(
+            String email,
+            UpdateProfileRequest request) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "User not found"
+                        )
+                );
+
+        user.setName(request.name().trim());
+        user.setContact(request.contact().trim());
+
+        User updatedUser = userRepository.save(user);
+
+        return toUserResponse(updatedUser);
+    }
+
+    private UserResponse toUserResponse(User user) {
+
+        return new UserResponse(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getContact(),
+                user.getRole(),
+                user.getCreatedAt()
+        );
+    }
+
 }

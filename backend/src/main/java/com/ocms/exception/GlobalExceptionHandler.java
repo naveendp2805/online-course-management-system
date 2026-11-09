@@ -99,7 +99,7 @@ public class GlobalExceptionHandler {
                         Map.of()
                 ));
     }
-    
+
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ApiError> handleBadCredentials(
             BadCredentialsException ex) {
@@ -111,5 +111,18 @@ public class GlobalExceptionHandler {
                         Map.of()
                 ));
     }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiError> handleResourceNotFound(
+            ResourceNotFoundException ex) {
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(buildError(
+                        HttpStatus.NOT_FOUND,
+                        ex.getMessage(),
+                        Map.of()
+                ));
+    }
+
 
 }
