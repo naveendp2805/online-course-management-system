@@ -1,0 +1,19 @@
+# Secrets
+.env
+.env.*
+
+# Java
+**/target/
+*.class
+
+# IntelliJ
+.idea/
+*.iml
+
+# Angular
+**/node_modules/
+**/dist/
+**/.angular/
+
+# Logs
+*.log
