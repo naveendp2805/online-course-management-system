@@ -124,5 +124,17 @@ public class GlobalExceptionHandler {
                 ));
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ApiError> handleIllegalState(
+            IllegalStateException ex) {
+
+        return ResponseEntity.badRequest()
+                .body(buildError(
+                        HttpStatus.BAD_REQUEST,
+                        ex.getMessage(),
+                        Map.of()
+                ));
+    }
+
 
 }

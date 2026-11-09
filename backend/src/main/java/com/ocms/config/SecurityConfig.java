@@ -1,7 +1,7 @@
 package com.ocms.config;
 
 import com.ocms.auth.filter.JwtAuthenticationFilter;
-
+import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -43,26 +43,39 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // Public endpoints
+                        // Allow internal error dispatches
+                        .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
+
+                        // Allow error endpoint
+                        .requestMatchers("/error").permitAll()
+
+                        // Public registration and login
                         .requestMatchers(
                                 HttpMethod.POST,
                                 "/api/users/register",
                                 "/api/auth/login"
                         ).permitAll()
 
-                        // Student-only endpoints
+                        // Public course browsing
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/courses",
+                                "/api/courses/**"
+                        ).permitAll()
+
+                        // Student endpoints
                         .requestMatchers("/api/student/**")
                         .hasRole("STUDENT")
 
-                        // Instructor-only endpoints
+                        // Instructor endpoints
                         .requestMatchers("/api/instructor/**")
                         .hasRole("INSTRUCTOR")
 
-                        // Admin-only endpoints
+                        // Admin endpoints
                         .requestMatchers("/api/admin/**")
                         .hasRole("ADMIN")
 
-                        // All other endpoints require authentication
+                        // Remaining endpoints require authentication
                         .anyRequest().authenticated()
                 )
 
