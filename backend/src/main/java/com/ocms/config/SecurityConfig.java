@@ -29,7 +29,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 HttpMethod.POST,
-                                "/api/users/register"
+                                "/api/users/register",
+                                "/api/auth/login"
                         ).permitAll()
 
                         .anyRequest().denyAll()
